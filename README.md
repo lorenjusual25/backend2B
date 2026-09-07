@@ -12,6 +12,8 @@ Repositorio de entregas para la materia Programacion Backend II: Diseño y Arqui
 - Nodemon
 - dotenv
 - mongoose
+- cookie-parser
+- jsonwebtoken
 
 ## Instalación
 ```bash

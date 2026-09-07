@@ -235,6 +235,7 @@ Response exitosa (`200 OK`):
 ### Entrega 2
 - ![captura de mongo de un usuario con la contraseña hasheada](img/contraHasheada.png)
 - ![captura de la respuesta del endpoint sin el campo password](img/resEndpointRegister.png)
+### Entrega 3
 - ![captura de la respuesta de login respondiendo una cookie](img/login200conCookie.png)
 - ![captura de /current devolviendo 200 con cookie](img/current200conCookie.png)
 - ![caputra de /current devolviendo 401 sin cookie](img/current401sinCookie.png)

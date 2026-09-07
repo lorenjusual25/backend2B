@@ -2,6 +2,7 @@ import * as sessionRepository from '../repositories/session.repository.js'
 import * as eventRepository from '../repositories/event.repository.js'
 import * as userRepository from '../repositories/user.repository.js'
 import { createSessionService } from '../services/session.service.js'
+import {generateToken,verifyToken} from '../utils/jwt.js'
 const sessionService = createSessionService(sessionRepository,eventRepository,userRepository)
 export async function createSession(req,res,next) {
     try {
@@ -41,4 +42,37 @@ export async function register(req,res,next) {
     catch (error) {
         next(error)
     }
+}
+export async function login (req,res,next) {
+    try {
+        const {email,password} = req.body
+        const payload = await sessionService.login(email,password)
+        const token = generateToken(payload)
+        res.cookie("currentUser",token,{
+            httpOnly:true,
+            maxAge:60*60*1000,
+            sameSite:'lax',
+            secure:process.env.NODE_ENV === 'production'
+        })
+        return res.status(200).json({
+            status:"success",
+            message:"Login correcto"
+        })
+    }
+    catch (error) {
+        next(error)
+    }
+}
+export function getCurrentUser (req, res) {
+  res.status(200).json({
+    status: 'success',
+    payload: req.user
+  })
+}
+export async function logout (req,res) {
+    res.clearCookie("currentUser")
+    return res.status(200).json({
+        status:"success",
+        message:"Logout exitoso"
+    })
 }

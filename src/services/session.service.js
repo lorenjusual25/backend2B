@@ -1,4 +1,4 @@
-import {createHash} from'../utils/hash.js'
+import {createHash,validatePassword} from'../utils/hash.js'
 const longMinPass = 8
 export function createSessionService(sessionRepository,eventRepository,userRepository) {
     return {
@@ -61,6 +61,32 @@ export function createSessionService(sessionRepository,eventRepository,userRepos
                 email:newUser.email,
                 role:newUser.role
             })
+        },
+        async login(email,password) {
+            if (!email || !password) {
+                const error = new Error("Faltan campos")
+                error.status = 400
+                throw error
+            }
+            const normalizedEmail = email.toLowerCase().trim()
+            const user = await userRepository.findEmail(normalizedEmail)
+            if (!user) {
+                const error = new Error("Credenciales incorrectas")
+                error.status = 401
+                throw error
+            }
+            const validPassword = await validatePassword(password,user.password)
+            if(!validPassword) {
+                const error = new Error("Credenciales incorrectas")
+                error.status = 401
+                throw error
+            }
+            const payload = {
+                id:user._id,
+                email:normalizedEmail,
+                role:user.role
+            }
+            return payload
         }
     }
 }
